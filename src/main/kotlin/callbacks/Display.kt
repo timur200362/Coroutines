@@ -5,6 +5,7 @@ import org.example.entities.Book
 import java.awt.BorderLayout
 import java.awt.Dimension
 import javax.swing.*
+import kotlin.concurrent.thread
 
 object Display {
 
@@ -16,12 +17,15 @@ object Display {
         addActionListener {
             isEnabled = false
             infoArea.text = "Loading book information...\n"
-            val book = loadBook()
-            infoArea.append("Book: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n")
-            infoArea.append("Loading author information...\n")
-            val author = loadAuthor(book)
-            infoArea.append("Author: ${author.name}\nBiography: ${author.bio}\n")
-            isEnabled = true
+            loadBook { book ->
+                infoArea.append("Book: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n")
+                infoArea.append("Loading author information...\n")
+
+                loadAuthor(book) { author ->
+                    infoArea.append("Author: ${author.name}\nBiography: ${author.bio}\n")
+                    isEnabled = true
+                }
+            }
         }
     }
     private val timerLabel = JLabel("Time 00:00")
@@ -42,14 +46,18 @@ object Display {
         startTimer()
     }
 
-    private fun loadBook(): Book {
-        Thread.sleep(3000)
-        return Book("1984", 1949, "Dystopia")
+    private fun loadBook(callback: (Book) -> Unit) {
+        thread {
+            Thread.sleep(3000)
+            callback(Book("1984", 1949, "Dystopia"))
+        }
     }
 
-    private fun loadAuthor(book: Book): Author {
-        Thread.sleep(3000)
-        return Author("George Orwell", "British writer and journalist")
+    private fun loadAuthor(book: Book, callback: (Author) -> Unit) {
+        thread {
+            Thread.sleep(3000)
+            callback(Author("George Orwell", "British writer and journalist"))
+        }
     }
 
     private fun startTimer() {
