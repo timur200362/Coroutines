@@ -1,6 +1,6 @@
 package org.example
 
-import org.example.callbacks.Display
+import org.example.coroutines.Display
 
 fun main() {
     Display.show()
