@@ -11,7 +11,7 @@ import javax.swing.*
 
 object Display {
 
-    private val scope = CoroutineScope(CoroutineName("My coroutine"))
+    private val scope = CoroutineScope(CoroutineName("My coroutine") + Dispatchers.Unconfined)
 
     private val infoArea = JTextArea().apply {
         isEditable = false
@@ -57,14 +57,26 @@ object Display {
         startTimer()
     }
 
+    private fun longOperation() {
+        mutableListOf<Int>().apply {
+            repeat(300_000) {
+                add(0, it)
+            }
+        }
+    }
+
     private suspend fun loadBook(): Book {
-        delay(3000)
-        return Book("1984", 1949, "Dystopia")
+        return withContext(Dispatchers.Default) {
+            longOperation()
+            Book("1984", 1949, "Dystopia")
+        }
     }
 
     private suspend fun loadAuthor(book: Book): Author {
-        delay(3000)
-        return Author("George Orwell", "British writer and journalist")
+        return withContext(Dispatchers.Default) {
+            longOperation()
+            Author("George Orwell", "British writer and journalist")
+        }
     }
 
     private fun startTimer() {
