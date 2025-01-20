@@ -11,7 +11,7 @@ import javax.swing.*
 
 object Display {
 
-    private val scope = CoroutineScope(CoroutineName("My coroutine") + Dispatchers.Unconfined)
+    private val scope = CoroutineScope(CoroutineName("My coroutine") + Dispatchers.Main)
 
     private val infoArea = JTextArea().apply {
         isEditable = false
