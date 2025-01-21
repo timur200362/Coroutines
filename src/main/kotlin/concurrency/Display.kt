@@ -28,7 +28,7 @@ object Display {
                     val book = loadBook()
                     infoArea.append("Book $it: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n\n")
                     book
-                }.also { jobs.add(it) }
+                }.let { jobs.add(it) }
             }
             scope.launch {
                 val books = jobs.awaitAll()
