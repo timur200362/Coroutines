@@ -1,4 +1,4 @@
-package org.example.exceptions
+package org.example.async
 
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
@@ -11,7 +11,7 @@ private val scope = CoroutineScope(dispatcher + CoroutineName("name") + Job() + 
 
 fun main() {
     scope.launch {
-        launch(exceptionHandler) {
+        async {
             method()
         }
     }
