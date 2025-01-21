@@ -22,15 +22,17 @@ object Display {
             isEnabled = false
             infoArea.text = "Loading book information...\n"
 
-            val jobs = mutableListOf<Job>()
+            val jobs = mutableListOf<Deferred<Book>>()
             repeat(10) {
-                scope.launch {
+                scope.async {
                     val book = loadBook()
                     infoArea.append("Book $it: ${book.title}\nYear: ${book.year}\nGenre: ${book.genre}\n\n")
+                    book
                 }.also { jobs.add(it) }
             }
             scope.launch {
-                jobs.joinAll()
+                val books = jobs.awaitAll()
+                println(books.joinToString(", "))
                 isEnabled = true
             }
         }
